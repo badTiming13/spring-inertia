@@ -1,0 +1,47 @@
+version: '3.8'
+
+services:
+  postgres:
+    image: docker.io/postgres:17
+    environment:
+      POSTGRES_USER: example_user
+      POSTGRES_PASSWORD: example_password
+      POSTGRES_DB: example_db
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+  spring:
+    image: maven:3.9.7-eclipse-temurin-21
+    working_dir: /app
+    volumes:
+      - maven_cache:/root/.m2
+      - ./:/app
+    command: ["mvn", "spring-boot:run", "-Dspring-boot.run.profiles=dev"]
+    environment:
+      SPRING_DATASOURCE_URL: 'jdbc:postgresql://postgres:5432/example_db'
+      SPRING_DATASOURCE_USERNAME: example_user
+      SPRING_DATASOURCE_PASSWORD: example_password
+      SPRING_JPA_HIBERNATE_DDL_AUTO: update
+    depends_on:
+      - postgres
+    ports:
+      - "8080:8080"
+
+  vite:
+    image: docker.io/node:24-slim
+    working_dir: /app
+    volumes:
+      - yarn_cache:/usr/local/share/.cache/yarn
+      - ./src/main/front:/app
+      - vite_node_modules:/app/node_modules
+    command: ["sh", "./start-server.sh", "-u", "http://spring:8080"]
+    ports:
+      - "5173:5173"
+    depends_on:
+      - spring
+
+volumes:
+  postgres_data:
+  maven_cache:
+  yarn_cache:
+  vite_node_modules:
