@@ -68,6 +68,17 @@
             <artifactId>inertia4j-spring</artifactId>
             <version>1.0.4</version>
         </dependency>
+        <dependency>
+            <groupId>io.github.inertia4j</groupId>
+            <artifactId>inertia4j-core</artifactId>
+            <version>1.0.2</version>
+        </dependency>
+        <dependency>
+            <groupId>io.github.inertia4j</groupId>
+            <artifactId>inertia4j-spi</artifactId>
+            <version>1.0.2</version>
+        </dependency>
+
     </dependencies>
 
     <build>
